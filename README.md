@@ -77,9 +77,9 @@ The following options can be passed into the constructor.
 
 - `retryOnErrors` (default: true) :: Controls whether it will retry
   after receiving errors from SQS. 
-- `initialBackoff` (default: 100) :: Time (ms) to wait on first error
+- `initialBackoff` (default: 100) :: Time (ms) to wait for first retry
   (will increase by doubling for each consecutive error)
-- `maxBackoff` (default: 15000) :: Maximum time (ms) to wait on error 
+- `maxBackoff` (default: 15000) :: Maximum time (ms) to wait for a retry
 - `stopOnQueueEmpty` (default: false) :: Controls whether it will stop
   (eg emit and `end` event) when the Queue is empty. The default
   behaviour is to wait for new items forever.
