@@ -8,9 +8,9 @@ By default it will carry on waiting for items on the queue forever, it
 will retry on errors and backpreasure is handled appropriately.
 
 Write by Thomas Parslow
-((almostobsolete.net)[http://almostobsolete.net] and
-(tomparslow.co.uk)[http://tomparslow.co.uk]) as part of Active Inbox
-((activeinboxhq.com)[http://activeinboxhq.com/]).
+([almostobsolete.net](http://almostobsolete.net) and
+[tomparslow.co.uk](http://tomparslow.co.uk)) as part of Active Inbox
+([activeinboxhq.com](http://activeinboxhq.com/)).
 
 
 Install
