@@ -1,0 +1,37 @@
+{
+  "name": "sqs-readable-stream",
+  "version": "0.1.0",
+  "description": "Create a Readable Node.JS stream from an Amazon Simple Queue Service (SQS) Queue",
+  "main": "sqs-readable-stream.js",
+  "scripts": {
+    "test": "mocha tests.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/almost/sqs-readable-stream"
+  },
+  "keywords": [
+    "AWS",
+    "SQS",
+    "Amazon",
+    "Stream",
+    "Readable"
+  ],
+  "author": {
+    "name": "Thomas Parslow",
+    "email": "tom@almostobsolete.net",
+    "url": "http://almostobsolete.net/"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/almost/sqs-readbale-stream/issues"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.0.19",
+    "expect.js": "^0.3.1",
+    "mocha": "^1.21.4"
+  },
+  "dependencies": {
+    "underscore": "^1.7.0"
+  }
+}
