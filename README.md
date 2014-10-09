@@ -12,6 +12,7 @@ Written by Thomas Parslow
 [tomparslow.co.uk](http://tomparslow.co.uk)) as part of Active Inbox
 ([activeinboxhq.com](http://activeinboxhq.com/)).
 
+[![Build Status](https://travis-ci.org/almost/sqs-readable-stream.svg)](https://travis-ci.org/almost/sqs-readable-stream)
 
 Install
 -------
