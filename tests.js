@@ -11,11 +11,29 @@ var messagesFixture = function () {
   });
 };
 
+var oldNextTick = process.nextTick;
+
 
 describe('SQSReadableStream', function () {
-  var sqsClient,sqsStream, receiveMessageArgs, deleteMessageArgs;
+  var sqsClient,sqsStream, receiveMessageArgs, deleteMessageArgs, nextTickScheduled;
+
+  function runNextTicks () {
+    var execute = function (fn) {
+        fn();
+    };
+    while (nextTickScheduled.length) {
+      var fns = nextTickScheduled;
+      nextTickScheduled = [];
+      fns.forEach(execute);
+    }
+  }
 
   beforeEach(function () {
+    nextTickScheduled = [];
+    process.nextTick = function (fn) {
+      nextTickScheduled.push(fn);
+    };
+    
     sqsClient = {
       receiveMessage: function (params, callback) {
         receiveMessageArgs = {params: params, callback: callback};
@@ -50,11 +68,13 @@ describe('SQSReadableStream', function () {
     
     it('should request items from SQS when resumed', function () {
       sqsStream.resume();
+      runNextTicks();
       expect(receiveMessageArgs).to.be.ok();
     });
 
     it('should pass on QueueURL and receiveMessageOptions to receiveMessage call', function () {
       sqsStream.resume();
+      runNextTicks();
       expect(receiveMessageArgs.params.QueueUrl).to.be("http://aws.example.com/queue");
       expect(receiveMessageArgs.params.testOption).to.be(99);
     });
@@ -64,7 +84,7 @@ describe('SQSReadableStream', function () {
       sqsStream.on('data', function (message) {
         messages.push(message);
       });
-      sqsStream.resume(); // Force it to start right now (eg not next tick)
+      runNextTicks();
       expect(receiveMessageArgs).to.be.ok();
       receiveMessageArgs.callback(null, {
         Messages: messagesFixture()
@@ -74,6 +94,7 @@ describe('SQSReadableStream', function () {
 
     it('should request more items once the first lot have been processed', function () {
       sqsStream.resume(); // Force it to start right now (eg not next tick)
+      runNextTicks();
       expect(receiveMessageArgs).to.be.ok();
       var callback = receiveMessageArgs.callback;
       receiveMessageArgs = null;
@@ -81,6 +102,8 @@ describe('SQSReadableStream', function () {
       callback(null, {
         Messages: messagesFixture()
       });
+      
+      runNextTicks();
 
       // Should have been called again
       expect(receiveMessageArgs).to.be.ok();
@@ -88,14 +111,18 @@ describe('SQSReadableStream', function () {
 
     it('should not request any more items if paused', function () {
       sqsStream.resume(); // Force it to start right now (eg not next tick)
+      runNextTicks();
+      
       expect(receiveMessageArgs).to.be.ok();
       var callback = receiveMessageArgs.callback;
       receiveMessageArgs = null;
       sqsStream.pause();
+      runNextTicks();
       
       callback(null, {
         Messages: messagesFixture()
       });
+      runNextTicks();
 
       // Should NOT have been called again
       expect(receiveMessageArgs).not.to.be.ok();
@@ -103,14 +130,18 @@ describe('SQSReadableStream', function () {
 
     it('should retry on errors when retryOnErrors option is given', function (done) {
       sqsStream.resume(); // Force it to start right now (eg not next tick)
+      runNextTicks();
+      
       expect(receiveMessageArgs).to.be.ok();
       var callback = receiveMessageArgs.callback;
       receiveMessageArgs = null;
       
       callback("FAIL");
+      runNextTicks();
 
       // Should NOT have been called again right away
       expect(receiveMessageArgs).not.to.be.ok();
+      runNextTicks();
 
       setTimeout(function () {
         if (receiveMessageArgs) {
@@ -135,15 +166,18 @@ describe('SQSReadableStream', function () {
       });
       
       sqsStream.resume(); // Force it to start right now (eg not next tick)
+      runNextTicks();
       
       var callback = receiveMessageArgs.callback;
       receiveMessageArgs = null;
       callback("FAIL");
+      runNextTicks();
 
       // Should NOT have been called again right away
       expect(receiveMessageArgs).not.to.be.ok();
 
       expect(error).to.be("FAIL");
+      runNextTicks();
 
       setTimeout(function () {
         if (!receiveMessageArgs) {
@@ -168,16 +202,19 @@ describe('SQSReadableStream', function () {
       });
       
       sqsStream.resume(); // Force it to start right now (eg not next tick)
+      runNextTicks();
       
       expect(receiveMessageArgs).to.be.ok();
       var callback = receiveMessageArgs.callback;
       receiveMessageArgs = null;
       
       callback(null, {Messages: []});
+      runNextTicks();
 
       // Should NOT have been called again 
       expect(receiveMessageArgs).not.to.be.ok();
 
+      runNextTicks();
       setTimeout(function () {
         if (ended) {
           done();
@@ -195,10 +232,12 @@ describe('SQSReadableStream', function () {
       sqsStream.on('data', function (message) {
         messages.push(message);
       });
-      sqsStream.resume(); // Force it to start right now (eg not next tick)
+      runNextTicks();
       receiveMessageArgs.callback(null, {
         Messages: messagesFixture()
       });
+      
+      runNextTicks();
     });
     
     it('should call deleteMessage on the SQS client', function () {
