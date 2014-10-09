@@ -86,8 +86,9 @@ The following options can be passed into the constructor.
   (will increase by doubling for each consecutive error)
 - `maxBackoff` (default: 15000) :: Maximum time (ms) to wait for a retry
 - `stopOnQueueEmpty` (default: false) :: Controls whether it will stop
-  (eg emit and `end` event) when the Queue is empty. The default
-  behaviour is to wait for new items forever.
+  (eg emit and `end` event and stop requesting new messages) when the
+  Queue is empty. The default behaviour is to wait for new items
+  forever.
 
 Contributing
 ------------
