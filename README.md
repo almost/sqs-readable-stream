@@ -55,6 +55,12 @@ sqsStream.on('error', function (error) {
 });
 ```
 
+If you want to process the messages asynchronously while avoiding
+overload you might consider using this library with my
+[through2-concurrent](https://github.com/almost/through2-concurrent)
+library. Here's [a gist](https://gist.github.com/almost/cd046427ce9203fbe3f3)
+with some example code.
+
 Messages
 --------
 
