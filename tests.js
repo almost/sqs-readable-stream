@@ -93,7 +93,7 @@ describe('SQSReadableStream', function () {
     });
 
     it('should request more items once the first lot have been processed', function () {
-      sqsStream.resume(); // Force it to start right now (eg not next tick)
+      sqsStream.resume(); 
       runNextTicks();
       expect(receiveMessageArgs).to.be.ok();
       var callback = receiveMessageArgs.callback;
@@ -110,7 +110,7 @@ describe('SQSReadableStream', function () {
     });
 
     it('should not request any more items if paused', function () {
-      sqsStream.resume(); // Force it to start right now (eg not next tick)
+      sqsStream.resume(); 
       runNextTicks();
       
       expect(receiveMessageArgs).to.be.ok();
@@ -129,7 +129,7 @@ describe('SQSReadableStream', function () {
     });
 
     it('should retry on errors when retryOnErrors option is given', function (done) {
-      sqsStream.resume(); // Force it to start right now (eg not next tick)
+      sqsStream.resume();
       runNextTicks();
       
       expect(receiveMessageArgs).to.be.ok();
@@ -165,7 +165,7 @@ describe('SQSReadableStream', function () {
         error = _error;
       });
       
-      sqsStream.resume(); // Force it to start right now (eg not next tick)
+      sqsStream.resume();
       runNextTicks();
       
       var callback = receiveMessageArgs.callback;
@@ -201,7 +201,7 @@ describe('SQSReadableStream', function () {
         ended = true;
       });
       
-      sqsStream.resume(); // Force it to start right now (eg not next tick)
+      sqsStream.resume();
       runNextTicks();
       
       expect(receiveMessageArgs).to.be.ok();

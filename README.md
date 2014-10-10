@@ -1,6 +1,8 @@
 SQSReadableStream
 =========
 
+[![NPM](https://nodei.co/npm/sqs-readable-stream.png?downloads&downloadRank)](https://nodei.co/npm/sqs-readable-stream/)
+
 Create a Readable Node.JS stream from an Amazon Simple Queue Service
 (AWS SQS) queue.
 
@@ -100,7 +102,7 @@ The following options can be passed into the constructor.
 Contributing
 ------------
 
-Fixed or improved stuff? Great! Send me a pull request [through GitHub](http://github.com/almost/sqs-readbale-stream) or get in touch on Twitter [@almostobsolete][#tom-twitter] or email at tom@almostobsolete.net
+Fixed or improved stuff? Great! Send me a pull request [through GitHub](http://github.com/almost/sqs-readable-stream) or get in touch on Twitter [@almostobsolete][#tom-twitter] or email at tom@almostobsolete.net
 
 [#tom]: http://www.almostobsolete.net
 [#tom-twitter]: https://twitter.com/almostobsolete
