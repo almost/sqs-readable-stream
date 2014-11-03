@@ -61,7 +61,7 @@ function receive() {
   
   var self = this;
   var params = _.defaults({QueueUrl: this.queueUrl}, this.receiveMessageOptions);
-  
+
   this.sqsClient.receiveMessage(params, function(err, data) {
     if (err) {
       self._readInProgress = false;
@@ -86,6 +86,20 @@ function receive() {
           self.sqsClient.deleteMessage({
             QueueUrl: self.queueUrl,
             ReceiptHandle: message.ReceiptHandle
+          }, callback || function () {});
+        };
+
+        // Add a releaseMessage method to the message to make it easy to release
+        message.releaseMessage = function (visibility, callback) {
+          if (_.isFunction(visibility)) {
+            callback = visibility;
+            visibility = 0;
+          }
+
+          self.sqsClient.changeMessageVisibility({
+            QueueUrl: self.queueUrl,
+            ReceiptHandle: message.ReceiptHandle,
+            VisibilityTimeout: visibility || 0
           }, callback || function () {});
         };
         
