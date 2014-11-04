@@ -15,7 +15,7 @@ var oldNextTick = process.nextTick;
 
 
 describe('SQSReadableStream', function () {
-  var sqsClient,sqsStream, receiveMessageArgs, deleteMessageArgs, nextTickScheduled;
+  var sqsClient,sqsStream, receiveMessageArgs, deleteMessageArgs, changeMessageVisibilityArgs, nextTickScheduled;
 
   function runNextTicks () {
     var execute = function (fn) {
@@ -40,12 +40,16 @@ describe('SQSReadableStream', function () {
       },
       deleteMessage: function (params, callback) {
         deleteMessageArgs = {params: params, callback: callback};
+      },
+      changeMessageVisibility: function(params, callback) {
+        changeMessageVisibilityArgs = {params: params, callback: callback};
       }
     };
     
     receiveMessageArgs = null;
     deleteMessageArgs = null;
-    
+    changeMessageVisibilityArgs = null;
+
     sqsStream = new SQSReadableStream({
       queueUrl: "http://aws.example.com/queue",
       sqsClient: sqsClient,
@@ -249,12 +253,56 @@ describe('SQSReadableStream', function () {
       expect(deleteMessageArgs.callback).to.be(myCallback);
     });
 
-    it('should allow the callback to be ommited', function () {
+    it('should allow the callback to be omitted', function () {
       messages[0].deleteMessage();
                                 
       expect(deleteMessageArgs.params.QueueUrl).to.be("http://aws.example.com/queue");
       expect(deleteMessageArgs.params.ReceiptHandle).to.be(messages[0].ReceiptHandle);
       expect(_.isFunction(deleteMessageArgs.callback)).to.be.ok();
+    });
+  });
+
+  describe('message.changeMessageVisibility', function () {
+    var messages;
+    beforeEach(function () {
+      messages = [];
+      sqsStream.on('data', function (message) {
+        messages.push(message);
+      });
+      runNextTicks();
+      receiveMessageArgs.callback(null, {
+        Messages: messagesFixture()
+      });
+
+      runNextTicks();
+    });
+
+    it('should call changeMessageVisibility on the SQS client', function () {
+      var myCallback = function () {};
+      messages[0].changeMessageVisibility(10, myCallback);
+
+      expect(changeMessageVisibilityArgs.params.QueueUrl).to.be("http://aws.example.com/queue");
+      expect(changeMessageVisibilityArgs.params.ReceiptHandle).to.be(messages[0].ReceiptHandle);
+      expect(changeMessageVisibilityArgs.params.VisibilityTimeout).to.be(10);
+      expect(changeMessageVisibilityArgs.callback).to.be(myCallback);
+    });
+
+    it('should allow the callback to be ommited', function () {
+      messages[0].changeMessageVisibility(10);
+
+      expect(changeMessageVisibilityArgs.params.QueueUrl).to.be("http://aws.example.com/queue");
+      expect(changeMessageVisibilityArgs.params.ReceiptHandle).to.be(messages[0].ReceiptHandle);
+      expect(changeMessageVisibilityArgs.params.VisibilityTimeout).to.be(10);
+      expect(_.isFunction(changeMessageVisibilityArgs.callback)).to.be.ok();
+    });
+
+    it('should allow the visibility and callback to be omitted', function () {
+      messages[0].changeMessageVisibility();
+
+      expect(changeMessageVisibilityArgs.params.QueueUrl).to.be("http://aws.example.com/queue");
+      expect(changeMessageVisibilityArgs.params.ReceiptHandle).to.be(messages[0].ReceiptHandle);
+      expect(changeMessageVisibilityArgs.params.VisibilityTimeout).to.be(0);
+      expect(_.isFunction(changeMessageVisibilityArgs.callback)).to.be.ok();
     });
   });
 });

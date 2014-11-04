@@ -89,8 +89,8 @@ function receive() {
           }, callback || function () {});
         };
 
-        // Add a releaseMessage method to the message to make it easy to release
-        message.releaseMessage = function (visibility, callback) {
+        // Add a changeMessageVisibility method to the message to make it easy to change the visibility
+        message.changeMessageVisibility = function (visibility, callback) {
           if (_.isFunction(visibility)) {
             callback = visibility;
             visibility = 0;
