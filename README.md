@@ -68,7 +68,7 @@ Messages
 
 The messages passed through the stream are as returned from aws-sdk
 with the addition of a `deleteMessage` method which can be used as a
-shortcut to delete the message from the queue.
+shortcut to delete the message from the queue and a 'changeMessageVisibility' method which can be used to put the message back onto the queue.
 
 Constructor Options
 -------
