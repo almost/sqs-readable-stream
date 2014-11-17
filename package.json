@@ -24,7 +24,7 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/almost/sqs-readbale-stream/issues"
+    "url": "https://github.com/almost/sqs-readable-stream/issues"
   },
   "devDependencies": {
     "aws-sdk": "^2.0.19",
